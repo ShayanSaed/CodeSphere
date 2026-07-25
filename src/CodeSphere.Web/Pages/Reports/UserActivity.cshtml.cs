@@ -20,7 +20,7 @@ public class UserActivityModel : PageModel
 
     public async Task OnGetAsync()
     {
-        Rows = await _reportService.GetUserActivityAsync();
+        Rows = await _reportService.GetUserActivityAsync(50);
     }
 
     public async Task<IActionResult> OnGetExportPdfAsync()

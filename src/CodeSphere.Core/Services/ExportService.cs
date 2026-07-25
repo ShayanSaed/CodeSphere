@@ -14,6 +14,9 @@ namespace CodeSphere.Core.Services;
 /// </summary>
 public class ExportService : IExportService
 {
+    private const int TrendingReportRowLimit = 50;
+    private const int UserActivityReportRowLimit = 50;
+
     private readonly IReportService _reportService;
 
     public ExportService(IReportService reportService)
@@ -24,7 +27,7 @@ public class ExportService : IExportService
 
     public async Task<byte[]> ExportTrendingArticlesToPdfAsync()
     {
-        var rows = await _reportService.GetTrendingArticlesAsync(50);
+        var rows = await _reportService.GetTrendingArticlesAsync(TrendingReportRowLimit);
 
         var document = Document.Create(container =>
         {
@@ -87,7 +90,7 @@ public class ExportService : IExportService
 
     public async Task<byte[]> ExportTrendingArticlesToExcelAsync()
     {
-        var rows = await _reportService.GetTrendingArticlesAsync(0);
+        var rows = await _reportService.GetTrendingArticlesAsync(TrendingReportRowLimit);
 
         using var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("Trending Articles");
@@ -123,7 +126,7 @@ public class ExportService : IExportService
 
     public async Task<byte[]> ExportUserActivityToPdfAsync()
     {
-        var rows = await _reportService.GetUserActivityAsync();
+        var rows = await _reportService.GetUserActivityAsync(UserActivityReportRowLimit);
 
         var document = Document.Create(container =>
         {
@@ -182,7 +185,7 @@ public class ExportService : IExportService
 
     public async Task<byte[]> ExportUserActivityToExcelAsync()
     {
-        var rows = await _reportService.GetUserActivityAsync();
+        var rows = await _reportService.GetUserActivityAsync(UserActivityReportRowLimit);
 
         using var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("User Activity");

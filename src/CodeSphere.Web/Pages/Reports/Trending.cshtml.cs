@@ -20,7 +20,7 @@ public class TrendingModel : PageModel
 
     public async Task OnGetAsync()
     {
-        Rows = await _reportService.GetTrendingArticlesAsync(0);
+        Rows = await _reportService.GetTrendingArticlesAsync(50);
     }
 
     public async Task<IActionResult> OnGetExportPdfAsync()

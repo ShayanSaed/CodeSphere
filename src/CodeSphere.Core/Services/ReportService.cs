@@ -15,7 +15,7 @@ public class ReportService : IReportService
     private readonly CodeSphereDbContext _db;
     public ReportService(CodeSphereDbContext db) => _db = db;
 
-    public async Task<List<TrendingArticleReportRow>> GetTrendingArticlesAsync(int top = 20)
+    public async Task<List<TrendingArticleReportRow>> GetTrendingArticlesAsync(int top = 50)
     {
         var query = _db.Articles
             .Include(a => a.Author)
@@ -38,9 +38,9 @@ public class ReportService : IReportService
         return top > 0 ? await query.Take(top).ToListAsync() : await query.ToListAsync();
     }
 
-    public async Task<List<UserActivityReportRow>> GetUserActivityAsync()
+    public async Task<List<UserActivityReportRow>> GetUserActivityAsync(int top = 50)
     {
-        return await _db.Users
+        var query = _db.Users
             .Include(u => u.Profile)
             .Include(u => u.Articles)
             .Include(u => u.Comments)
@@ -55,8 +55,11 @@ public class ReportService : IReportService
                 TotalReactions = u.Reactions.Count,
                 TotalFollowers = _db.Follows.Count(f => f.FollowingUserID == u.Id)
             })
-            .OrderByDescending(r => r.TotalArticles)
-            .ToListAsync();
+            .OrderByDescending(r => r.TotalArticles);
+
+        return top > 0
+            ? await query.Take(top).ToListAsync()
+            : await query.ToListAsync();
     }
 
     public async Task<DashboardStatsDto> GetDashboardStatsAsync()
