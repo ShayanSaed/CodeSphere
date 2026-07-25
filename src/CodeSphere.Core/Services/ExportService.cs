@@ -140,6 +140,7 @@ public class ExportService : IExportService
                 {
                     table.ColumnsDefinition(columns =>
                     {
+                        columns.ConstantColumn(30);
                         columns.RelativeColumn(2);
                         columns.RelativeColumn(3);
                         columns.ConstantColumn(60);
@@ -150,18 +151,21 @@ public class ExportService : IExportService
 
                     table.Header(header =>
                     {
-                        foreach (var title in new[] { "Username", "Full Name", "Articles", "Comments", "Reactions", "Followers" })
+                        foreach (var title in new[] { "#", "Username", "Full Name", "Articles", "Comments", "Reactions", "Followers" })
                             header.Cell().Element(HeaderCellStyle).Text(title).SemiBold();
                     });
 
+                    var rank = 1;
                     foreach (var r in rows)
                     {
+                        table.Cell().Element(BodyCellStyle).Text(rank.ToString());
                         table.Cell().Element(BodyCellStyle).Text(r.Username);
                         table.Cell().Element(BodyCellStyle).Text(r.FullName ?? "-");
                         table.Cell().Element(BodyCellStyle).Text(r.TotalArticles.ToString());
                         table.Cell().Element(BodyCellStyle).Text(r.TotalComments.ToString());
                         table.Cell().Element(BodyCellStyle).Text(r.TotalReactions.ToString());
                         table.Cell().Element(BodyCellStyle).Text(r.TotalFollowers.ToString());
+                        rank++;
                     }
                 });
 

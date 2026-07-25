@@ -20,14 +20,14 @@
     <table class="table table-striped table-hover mb-0">
         <thead>
             <tr>
-                <th>#</th>
+                <th class="text-center">#</th>
                 <th>Title</th>
                 <th>Author</th>
                 <th>Category</th>
                 <th>Views</th>
                 <th>Comments</th>
                 <th>Reactions</th>
-                <th>Engagement Score</th>
+                <th class="text-nowrap">Engagement Score</th>
             </tr>
         </thead>
         <tbody>
@@ -35,14 +35,14 @@
             @foreach (var r in Model.Rows)
             {
                 <tr>
-                    <td>@rank</td>
+                    <td class="text-center">@rank</td>
                     <td class="text-nowrap"><a asp-page="/Articles/Details" asp-route-id="@r.ArticleID">@r.Title</a></td>
                     <td class="text-nowrap">@r.Author</td>
                     <td class="text-nowrap">@r.CategoryName</td>
-                    <td>@r.ViewCount</td>
-                    <td>@r.CommentCount</td>
-                    <td>@r.ReactionCount</td>
-                    <td><strong>@r.EngagementScore</strong></td>
+                    <td class="text-center">@r.ViewCount</td>
+                    <td class="text-center">@r.CommentCount</td>
+                    <td class="text-center">@r.ReactionCount</td>
+                    <td class="text-center"><strong>@r.EngagementScore</strong></td>
                 </tr>
                 rank++;
             }

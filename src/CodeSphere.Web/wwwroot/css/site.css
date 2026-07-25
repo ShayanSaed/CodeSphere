@@ -4,9 +4,19 @@
   --navbar-height: 56px; /* kept in sync at runtime by site.js (updateNavbarHeightVar) */
 }
 
-body { background-color: #f7f8fa; }
+body {
+    background-color: #f7f8fa;
+    padding-top: var(--navbar-height);
+}
 
-.cs-navbar { background-color: var(--cs-primary); }
+.cs-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background-color: var(--cs-primary);
+}
 
 .article-card {
   border: 1px solid #e5e7eb;
@@ -62,23 +72,61 @@ body { background-color: #f7f8fa; }
    sticks to the top of that self-contained box.
    ========================================================================== */
 .report-table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
+
 .report-table-wrapper thead th {
-  position: sticky;
-  top: var(--navbar-height);
-  background-color: var(--bs-table-bg, #fff);
-  box-shadow: 0 1px 0 rgba(0,0,0,.08);
-  z-index: 2;
+    position: sticky;
+    background: var(--bs-table-bg, #fff);
+    box-shadow: 0 1px 0 rgba(0,0,0,.08);
+    z-index: 10;
 }
+
+@media (min-width: 768px) {
+
+    .report-table-wrapper {
+        overflow: visible;
+    }
+
+        .report-table-wrapper thead th {
+            position: sticky;
+            top: var(--navbar-height);
+            z-index: 10;
+            background: var(--bs-table-bg, #fff);
+        }
+}
+
 @media (max-width: 767.98px) {
-  .report-table-wrapper {
-    max-height: 65vh;
-    overflow-y: auto;
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    border-radius: .375rem;
-  }
+
+    .report-table-wrapper {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 65vh;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid var(--bs-border-color, #dee2e6);
+        border-radius: .375rem;
+    }
+
+        .report-table-wrapper thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bs-table-bg, #fff);
+        }
+}
+
+@media print {
+    .report-table-wrapper {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .report-table-wrapper thead th {
+        position: static;
+        box-shadow: none;
+    }
 }
 @media print {
   .report-table-wrapper { max-height: none; overflow: visible; }
