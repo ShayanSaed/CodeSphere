@@ -4,6 +4,8 @@ using CodeSphere.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using CodeSphere.Core.Common;
 
 namespace CodeSphere.Web.Areas.Identity.Pages.Account;
 
@@ -31,6 +33,8 @@ public class RegisterModel : PageModel
 
     [BindProperty]
     public InputModel Input { get; set; } = new();
+
+    public IReadOnlyList<CountryItem> Countries => CountryList.Items;
 
     public string ReturnUrl { get; set; } = "/";
 
