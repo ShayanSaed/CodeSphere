@@ -1,0 +1,40 @@
+@page
+@model CodeSphere.Web.Areas.Identity.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card p-4">
+            <h1 class="mb-4">Log in</h1>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" autofocus />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Password" class="form-label"></label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    <label class="form-check-label" asp-for="Input.RememberMe"></label>
+                </div>
+
+                <button type="submit" class="btn btn-cs-accent w-100">Log in</button>
+            </form>
+
+            <p class="mt-3 text-muted mb-0">
+                New to CodeSphere?
+                <a asp-page="/Account/Register" asp-route-returnUrl="@Model.ReturnUrl">Create an account</a>.
+            </p>
+        </div>
+    </div>
+</div>

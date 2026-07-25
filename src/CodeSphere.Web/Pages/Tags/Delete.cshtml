@@ -1,0 +1,14 @@
+@page "{id:int}"
+@model CodeSphere.Web.Pages.Tags.DeleteModel
+@{
+    ViewData["Title"] = "Delete Tag";
+}
+<h1>Delete Tag</h1>
+@if (Model.Tag != null)
+{
+    <div class="alert alert-warning">Delete tag "#@Model.Tag.TagName"? This can't be undone.</div>
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        <a asp-page="/Tags/Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+}

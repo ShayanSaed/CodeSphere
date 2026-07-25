@@ -1,0 +1,16 @@
+@page "{id:int}"
+@model CodeSphere.Web.Pages.Categories.DeleteModel
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h1>Delete Category</h1>
+
+@if (Model.Category != null)
+{
+    <div class="alert alert-warning">Delete category "@Model.Category.CategoryName"? This can't be undone. (Categories with articles can't be deleted.)</div>
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        <a asp-page="/Categories/Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+}

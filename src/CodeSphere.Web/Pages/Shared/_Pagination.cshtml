@@ -1,0 +1,74 @@
+@model CodeSphere.Web.Models.PaginationViewModel
+@{
+    var current = Model.CurrentPage;
+    var total = Model.TotalPages;
+
+    Dictionary<string, string> RouteFor(int page)
+    {
+        var dict = new Dictionary<string, string>(Model.RouteValues) { ["PageNumber"] = page.ToString() };
+        return dict;
+    }
+
+    // Compact window: first page, last page, current page +/-1, with "…" collapsing
+    // everything else — avoids ever rendering a long unbroken list of page links
+    // (which was overflowing on mobile).
+    var pagesToShow = new List<int?>();
+    if (total <= 7)
+    {
+        for (var i = 1; i <= total; i++) { pagesToShow.Add(i); }
+    }
+    else
+    {
+        pagesToShow.Add(1);
+        if (current > 3) { pagesToShow.Add(null); }
+        var start = Math.Max(2, current - 1);
+        var end = Math.Min(total - 1, current + 1);
+        for (var i = start; i <= end; i++) { pagesToShow.Add(i); }
+        if (current < total - 2) { pagesToShow.Add(null); }
+        pagesToShow.Add(total);
+    }
+}
+@if (total > 1)
+{
+    <nav aria-label="Page navigation" class="cs-pagination mt-4">
+        <ul class="pagination flex-wrap justify-content-center mb-0">
+            <li class="page-item @(current <= 1 ? "disabled" : "")">
+                @if (current <= 1)
+                {
+                    <span class="page-link">&laquo;</span>
+                }
+                else
+                {
+                    <a class="page-link" asp-page="@Model.PageName" asp-all-route-data="@RouteFor(current - 1)" aria-label="Previous">&laquo;</a>
+                }
+            </li>
+            @foreach (var p in pagesToShow)
+            {
+                if (p is null)
+                {
+                    <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                }
+                else if (p == current)
+                {
+                    <li class="page-item active" aria-current="page"><span class="page-link">@p</span></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-page="@Model.PageName" asp-all-route-data="@RouteFor(p.Value)">@p</a>
+                    </li>
+                }
+            }
+            <li class="page-item @(current >= total ? "disabled" : "")">
+                @if (current >= total)
+                {
+                    <span class="page-link">&raquo;</span>
+                }
+                else
+                {
+                    <a class="page-link" asp-page="@Model.PageName" asp-all-route-data="@RouteFor(current + 1)" aria-label="Next">&raquo;</a>
+                }
+            </li>
+        </ul>
+    </nav>
+}

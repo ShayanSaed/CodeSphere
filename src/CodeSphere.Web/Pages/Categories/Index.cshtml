@@ -1,0 +1,57 @@
+@page
+@model CodeSphere.Web.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+    <h1 class="mb-0">Categories</h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <a class="btn btn-cs-accent" asp-page="/Categories/Create"><i class="bi bi-plus-circle"></i> New Category</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="Keyword" value="@Model.Keyword" class="form-control" placeholder="Search categories by name..." />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-cs-accent w-100"><i class="bi bi-search"></i> Search</button>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.Keyword))
+    {
+        <div class="col-md-2">
+            <a asp-page="/Categories/Index" class="btn btn-outline-secondary w-100">Clear</a>
+        </div>
+    }
+</form>
+
+@if (!Model.Categories.Any())
+{
+    <p class="text-muted">No categories match your search.</p>
+}
+
+<div class="row row-cols-1 row-cols-md-3 g-3">
+    @foreach (var c in Model.Categories)
+    {
+        <div class="col">
+            <div class="card h-100 p-3">
+                <h5><a asp-page="/Index" asp-route-CategoryId="@c.CategoryID" class="text-decoration-none">@c.CategoryName</a></h5>
+                <p class="text-muted small">@c.Description</p>
+                <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <span class="badge bg-light text-dark border">@c.ArticleCount articles</span>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <span>
+                            <a class="btn btn-sm btn-outline-secondary" asp-page="/Categories/Edit" asp-route-id="@c.CategoryID"><i class="bi bi-pencil"></i></a>
+                            <a class="btn btn-sm btn-outline-danger" asp-page="/Categories/Delete" asp-route-id="@c.CategoryID"><i class="bi bi-trash"></i></a>
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<partial name="Shared/_Pagination" model="Model.Pagination" />

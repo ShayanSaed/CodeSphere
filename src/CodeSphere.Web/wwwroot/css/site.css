@@ -1,0 +1,180 @@
+:root {
+  --cs-primary: #2b3a67;
+  --cs-accent: #ff6b35;
+  --navbar-height: 56px; /* kept in sync at runtime by site.js (updateNavbarHeightVar) */
+}
+
+body { background-color: #f7f8fa; }
+
+.cs-navbar { background-color: var(--cs-primary); }
+
+.article-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: box-shadow .15s ease-in-out, background-color .15s ease-in-out;
+}
+.article-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+
+.tag-badge {
+  background-color: #eef1f8;
+  color: var(--cs-primary);
+  border-radius: 1rem;
+  padding: .2rem .6rem;
+  font-size: .8rem;
+  margin-right: .25rem;
+  display: inline-block;
+}
+
+.btn-cs-accent {
+  background-color: var(--cs-accent);
+  border-color: var(--cs-accent);
+  color: #fff;
+}
+.btn-cs-accent:hover { background-color: #e2571f; color: #fff; }
+
+.reaction-btn.active { background-color: var(--cs-accent); color: #fff; border-color: var(--cs-accent); }
+
+.stat-card { border-radius: .75rem; }
+
+/* ==========================================================================
+   Compact pagination ("1 2 3 ... 27 28 29" with Prev/Next) — see
+   Pages/Shared/_Pagination.cshtml. Bootstrap's .pagination already wraps
+   reasonably, this just tightens things up on very small screens so it
+   never forces horizontal scroll on the page itself.
+   ========================================================================== */
+.cs-pagination .pagination {
+  row-gap: .5rem;
+}
+@media (max-width: 400px) {
+  .cs-pagination .page-link {
+    padding: .375rem .55rem;
+    font-size: .875rem;
+  }
+}
+
+/* ==========================================================================
+   Reports: sticky table header + a self-contained vertical scrollbox on
+   mobile so the report never pushes the page itself out of frame.
+   On desktop (no inner scroll set), the sticky header's nearest scrolling
+   ancestor is the page/viewport, so it docks just below the sticky navbar
+   as the whole page scrolls. On mobile, the wrapper itself becomes the
+   scrolling ancestor (via the media query below), so the header instead
+   sticks to the top of that self-contained box.
+   ========================================================================== */
+.report-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.report-table-wrapper thead th {
+  position: sticky;
+  top: var(--navbar-height);
+  background-color: var(--bs-table-bg, #fff);
+  box-shadow: 0 1px 0 rgba(0,0,0,.08);
+  z-index: 2;
+}
+@media (max-width: 767.98px) {
+  .report-table-wrapper {
+    max-height: 65vh;
+    overflow-y: auto;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: .375rem;
+  }
+}
+@media print {
+  .report-table-wrapper { max-height: none; overflow: visible; }
+  .report-table-wrapper thead th { position: static; box-shadow: none; }
+}
+
+/* ==========================================================================
+   Tag picker (intellisense-style tag search used on Create/Edit article
+   pages) — see wwwroot/js/site.js (initTagPicker) for behaviour.
+   ========================================================================== */
+.tag-picker { position: relative; }
+.tag-picker-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-bottom: .5rem;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background-color: var(--cs-primary);
+  color: #fff;
+  border-radius: 1rem;
+  padding: .25rem .5rem .25rem .75rem;
+  font-size: .85rem;
+}
+.tag-chip button {
+  background: none;
+  border: none;
+  color: #fff;
+  opacity: .8;
+  line-height: 1;
+  padding: 0;
+  font-size: 1rem;
+}
+.tag-chip button:hover { opacity: 1; }
+
+.tag-picker-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--bs-body-bg, #fff);
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: .375rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  display: none;
+}
+.tag-picker-suggestions.show { display: block; }
+.tag-suggestion-item {
+  padding: .5rem .75rem;
+  cursor: pointer;
+}
+.tag-suggestion-item:hover,
+.tag-suggestion-item.active {
+  background-color: var(--cs-primary);
+  color: #fff;
+}
+.tag-picker-empty {
+  padding: .5rem .75rem;
+  color: var(--bs-secondary-color, #6c757d);
+  font-size: .875rem;
+}
+
+/* ==========================================================================
+   Dark theme overrides (Bootstrap 5.3 color modes: [data-bs-theme="dark"]).
+   Bootstrap re-themes its own components automatically; these cover the
+   handful of custom colors this app defines itself.
+   ========================================================================== */
+[data-bs-theme="dark"] body { background-color: #14171f; }
+
+[data-bs-theme="dark"] .article-card {
+  border-color: #2b2f3a;
+  background-color: #1b1f2a;
+}
+
+[data-bs-theme="dark"] .tag-badge {
+  background-color: #232a42;
+  color: #b9c4ff;
+}
+
+[data-bs-theme="dark"] .tag-picker-suggestions {
+  background-color: #1b1f2a;
+  border-color: #2b2f3a;
+}
+
+[data-bs-theme="dark"] .report-table-wrapper thead th {
+  background-color: var(--bs-table-bg, #1b1f2a);
+}
+
+[data-bs-theme="dark"] .stat-card,
+[data-bs-theme="dark"] .card {
+  background-color: #1b1f2a;
+  border-color: #2b2f3a;
+}

@@ -1,0 +1,107 @@
+@page
+@model CodeSphere.Web.Pages.Articles.Manage.IndexModel
+@{
+    ViewData["Title"] = "My Articles";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+    <h1 class="mb-0">My Articles</h1>
+    <a class="btn btn-cs-accent" asp-page="/Articles/Manage/Create"><i class="bi bi-plus-circle"></i> New Article</a>
+</div>
+
+<form method="get" class="row g-2 mb-4 align-items-end">
+    <div class="col-12 col-md-3">
+        <label class="form-label small text-muted">Search</label>
+        <input type="text" name="Keyword" value="@Model.Keyword" class="form-control" placeholder="Search your articles..." />
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small text-muted">In</label>
+        <select name="SearchColumn" class="form-select">
+            <option value="Title" selected="@(Model.SearchColumn == "Title")">Title</option>
+            <option value="Content" selected="@(Model.SearchColumn == "Content")">Content</option>
+        </select>
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small text-muted">Category</label>
+        <select name="CategoryId" class="form-select">
+            <option value="">All</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.CategoryID" selected="@(Model.CategoryId == c.CategoryID)">@c.CategoryName</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small text-muted">Tag</label>
+        <select name="TagId" class="form-select">
+            <option value="">All</option>
+            @foreach (var t in Model.Tags)
+            {
+                <option value="@t.TagID" selected="@(Model.TagId == t.TagID)">#@t.TagName</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-1">
+        <label class="form-label small text-muted">Status</label>
+        <select name="Status" class="form-select">
+            <option value="">All</option>
+            <option value="Published" selected="@(Model.Status == "Published")">Published</option>
+            <option value="Draft" selected="@(Model.Status == "Draft")">Draft</option>
+        </select>
+    </div>
+    <div class="col-6 col-md-1">
+        <label class="form-label small text-muted">Sort</label>
+        <select name="SortBy" class="form-select">
+            <option value="Newest" selected="@(Model.SortBy == "Newest")">Newest</option>
+            <option value="Trending" selected="@(Model.SortBy == "Trending")">Trending</option>
+            <option value="MostViewed" selected="@(Model.SortBy == "MostViewed")">Views</option>
+        </select>
+    </div>
+    <div class="col-12 col-md-1">
+        <button type="submit" class="btn btn-cs-accent w-100"><i class="bi bi-search"></i></button>
+    </div>
+</form>
+
+@if (!Model.MyArticles.Items.Any())
+{
+    <p class="text-muted">No articles match your search.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Views</th>
+                    <th>Comments</th>
+                    <th>Published</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var article in Model.MyArticles.Items)
+                {
+                    <tr>
+                        <td><a asp-page="/Articles/Details" asp-route-id="@article.ArticleID">@article.Title</a></td>
+                        <td>@article.CategoryName</td>
+                        <td>
+                            <span class="badge @(article.Status == "Published" ? "bg-success" : "bg-secondary")">@article.Status</span>
+                        </td>
+                        <td>@article.ViewCount</td>
+                        <td>@article.CommentCount</td>
+                        <td>@(article.PublishDate?.ToString("MMM dd, yyyy") ?? "-")</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary" asp-page="/Articles/Manage/Edit" asp-route-id="@article.ArticleID"><i class="bi bi-pencil"></i></a>
+                            <a class="btn btn-sm btn-outline-danger" asp-page="/Articles/Manage/Delete" asp-route-id="@article.ArticleID"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<partial name="Shared/_Pagination" model="Model.Pagination" />

@@ -1,0 +1,88 @@
+@page
+@model CodeSphere.Web.Pages.Bookmarks.IndexModel
+@{
+    ViewData["Title"] = "My Bookmarks";
+}
+
+<h1 class="mb-3">My Bookmarks</h1>
+
+<form method="get" class="row g-2 mb-4 align-items-end">
+    <div class="col-12 col-md-4">
+        <label class="form-label small text-muted">Search</label>
+        <input type="text" name="Keyword" value="@Model.Keyword" class="form-control" placeholder="Search your bookmarks..." />
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small text-muted">In</label>
+        <select name="SearchColumn" class="form-select">
+            <option value="Title" selected="@(Model.SearchColumn == "Title")">Title</option>
+            <option value="Content" selected="@(Model.SearchColumn == "Content")">Content</option>
+        </select>
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small text-muted">Category</label>
+        <select name="CategoryId" class="form-select">
+            <option value="">All</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.CategoryID" selected="@(Model.CategoryId == c.CategoryID)">@c.CategoryName</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small text-muted">Tag</label>
+        <select name="TagId" class="form-select">
+            <option value="">All</option>
+            @foreach (var t in Model.Tags)
+            {
+                <option value="@t.TagID" selected="@(Model.TagId == t.TagID)">#@t.TagName</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-1">
+        <label class="form-label small text-muted">Sort</label>
+        <select name="SortBy" class="form-select">
+            <option value="Newest" selected="@(Model.SortBy == "Newest")">Newest</option>
+            <option value="Trending" selected="@(Model.SortBy == "Trending")">Trending</option>
+            <option value="MostViewed" selected="@(Model.SortBy == "MostViewed")">Views</option>
+        </select>
+    </div>
+    <div class="col-12 col-md-1">
+        <button type="submit" class="btn btn-cs-accent w-100"><i class="bi bi-search"></i></button>
+    </div>
+</form>
+
+@if (!Model.Bookmarked.Items.Any())
+{
+    <p class="text-muted">No bookmarks match your search.</p>
+}
+
+<div class="row row-cols-1 row-cols-md-2 g-3">
+    @foreach (var article in Model.Bookmarked.Items)
+    {
+        <div class="col">
+            <div class="card article-card h-100 p-3">
+                <div class="d-flex justify-content-between">
+                    <span class="badge bg-light text-dark border text-wrap text-start">@article.CategoryName</span>
+                    <small class="text-muted flex-shrink-0 ms-2"><i class="bi bi-clock"></i> @article.ReadingTime min</small>
+                </div>
+                <h5 class="mt-2"><a class="text-decoration-none" asp-page="/Articles/Details" asp-route-id="@article.ArticleID">@article.Title</a></h5>
+                <div class="mb-2">
+                    @foreach (var tag in article.Tags)
+                    {
+                        <span class="tag-badge">#@tag</span>
+                    }
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-auto text-muted small">
+                    <span><i class="bi bi-person"></i> <a asp-page="/Users/Details" asp-route-id="@article.AuthorId" class="text-decoration-none text-muted">@article.Author</a></span>
+                    <span>
+                        <i class="bi bi-eye"></i> @article.ViewCount
+                        &nbsp;<i class="bi bi-chat"></i> @article.CommentCount
+                        &nbsp;<i class="bi bi-heart"></i> @article.ReactionCount
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<partial name="Shared/_Pagination" model="Model.Pagination" />

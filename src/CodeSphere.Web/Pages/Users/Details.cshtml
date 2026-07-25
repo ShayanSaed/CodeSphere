@@ -1,0 +1,112 @@
+@page "{id:int}"
+@model CodeSphere.Web.Pages.Users.DetailsModel
+@{
+    ViewData["Title"] = Model.Profile?.FullName ?? Model.Profile?.Username ?? "Profile";
+}
+
+@if (Model.Profile is null)
+{
+    <p>User not found.</p>
+}
+else
+{
+    var p = Model.Profile;
+    <div class="card p-4 mb-4">
+        <div class="d-flex flex-column flex-md-row gap-3 align-items-center align-items-md-start">
+            @if (!string.IsNullOrWhiteSpace(p.ProfileImageURL))
+            {
+                <img src="@p.ProfileImageURL" alt="@p.Username's avatar" class="rounded-circle" width="120" height="120" style="object-fit:cover;" />
+            }
+            else
+            {
+                <i class="bi bi-person-circle" style="font-size:120px;color:var(--cs-primary);"></i>
+            }
+
+            <div class="flex-grow-1 text-center text-md-start">
+                <h1 class="mb-0">@(p.FullName ?? p.Username)</h1>
+                <p class="text-muted mb-2">@@@p.Username &middot; Joined @p.JoinDate.ToString("MMM yyyy")</p>
+
+                @if (!string.IsNullOrWhiteSpace(p.Bio))
+                {
+                    <p class="mb-2">@p.Bio</p>
+                }
+
+                <div class="d-flex flex-wrap gap-3 text-muted small mb-2">
+                    @if (!string.IsNullOrWhiteSpace(p.Country))
+                    {
+                        <span><i class="bi bi-geo-alt"></i> @p.Country</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(p.WebsiteURL))
+                    {
+                        <span><i class="bi bi-link-45deg"></i> <a href="@p.WebsiteURL" target="_blank" rel="noopener noreferrer">@p.WebsiteURL</a></span>
+                    }
+                    <span><i class="bi bi-people"></i> @p.FollowerCount followers</span>
+                    <span><i class="bi bi-person-check"></i> @p.FollowingCount following</span>
+                    <span><i class="bi bi-journal-text"></i> @p.Articles.Count published articles</span>
+                </div>
+
+                @if (!Model.IsOwnProfile && User.Identity?.IsAuthenticated == true)
+                {
+                    <button class="btn @(Model.IsFollowing ? "btn-secondary" : "btn-cs-accent") no-print" data-profile-follow-btn data-user-id="@p.UserId">
+                        @(Model.IsFollowing ? "Following" : "Follow")
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Published Articles</h4>
+    @if (!p.Articles.Any())
+    {
+        <p class="text-muted">This user hasn't published any articles yet.</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            @foreach (var article in p.Articles)
+            {
+                <div class="col">
+                    <div class="card article-card h-100 p-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-light text-dark border text-wrap text-start">@article.CategoryName</span>
+                            <small class="text-muted"><i class="bi bi-clock"></i> @article.ReadingTime min read</small>
+                        </div>
+                        <h5 class="mt-2"><a class="text-decoration-none" asp-page="/Articles/Details" asp-route-id="@article.ArticleID">@article.Title</a></h5>
+                        <div class="d-flex justify-content-between align-items-center mt-auto text-muted small">
+                            <span>@(article.PublishDate?.ToString("MMM dd, yyyy") ?? "-")</span>
+                            <span>
+                                <i class="bi bi-eye"></i> @article.ViewCount
+                                &nbsp;<i class="bi bi-chat"></i> @article.CommentCount
+                                &nbsp;<i class="bi bi-heart"></i> @article.ReactionCount
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+
+@section Scripts {
+    @if (Model.Profile != null && !Model.IsOwnProfile)
+    {
+        @Html.AntiForgeryToken()
+        <script>
+            const followBtn = document.querySelector('[data-profile-follow-btn]');
+            if (followBtn) {
+                followBtn.addEventListener('click', async () => {
+                    const userId = followBtn.dataset.userId;
+                    try {
+                        const following = await csPostJson(`?handler=Follow&id=${userId}`, {});
+                        followBtn.textContent = following ? 'Following' : 'Follow';
+                        followBtn.classList.toggle('btn-secondary', following === true);
+                        followBtn.classList.toggle('btn-cs-accent', following !== true);
+                    } catch (e) {
+                        console.error(e);
+                        showToast('Could not update follow status. Please try again.');
+                    }
+                });
+            }
+        </script>
+    }
+}

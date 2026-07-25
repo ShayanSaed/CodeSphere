@@ -1,0 +1,95 @@
+@page "{id:int}"
+@model CodeSphere.Web.Pages.Articles.DetailsModel
+@{
+    ViewData["Title"] = Model.Article?.Title ?? "Article";
+}
+
+@if (Model.Article is null)
+{
+    <p>Article not found.</p>
+}
+else
+{
+    var a = Model.Article;
+    <article>
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <span class="badge bg-light text-dark border mb-2 text-wrap text-start">@a.CategoryName</span>
+                <h1>@a.Title</h1>
+                <p class="text-muted">
+                    By <strong><a asp-page="/Users/Details" asp-route-id="@a.AuthorId" class="text-decoration-none">@a.Author</a></strong> &middot; @(a.PublishDate?.ToString("MMM dd, yyyy") ?? "Draft")
+                    &middot; <i class="bi bi-clock"></i> @a.ReadingTime min read
+                    &middot; <i class="bi bi-eye"></i> @a.ViewCount views
+                </p>
+            </div>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <button class="btn btn-outline-secondary no-print @(Model.IsBookmarked ? "active" : "")" data-bookmark-btn data-article-id="@a.ArticleID">
+                    <i class="bi bi-bookmark@(Model.IsBookmarked ? "-fill" : "")"></i> @(Model.IsBookmarked ? "Saved" : "Save")
+                </button>
+            }
+        </div>
+
+        <div class="mb-3">
+            @foreach (var tag in a.Tags)
+            {
+                <span class="tag-badge">#@tag</span>
+            }
+        </div>
+
+        <div class="content mb-4" style="white-space: pre-wrap;">@a.Content</div>
+
+        <div class="d-flex gap-2 mb-4 no-print">
+            @{
+                var reactionIcons = new Dictionary<string, string>
+                {
+                    { "Like", "bi-hand-thumbs-up" },
+                    { "Love", "bi-heart-fill" },
+                    { "Idea", "bi-lightbulb" }
+                };
+            }
+            @foreach (var type in new[] { "Like", "Love", "Idea" })
+            {
+                var count = a.ReactionBreakdown.TryGetValue(type, out var c) ? c : 0;
+                <button class="btn btn-outline-primary reaction-btn" data-reaction-btn="@type" data-article-id="@a.ArticleID" title="@type">
+                    <i class="bi @reactionIcons[type]"></i> <span data-reaction-count="@type">@count</span>
+                </button>
+            }
+        </div>
+
+        <hr />
+
+        <h4 id="commentCount">@a.CommentCount Comments</h4>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form id="inlineCommentForm" data-article-id="@a.ArticleID" class="mb-3 no-print">
+                @Html.AntiForgeryToken()
+                <textarea name="commentText" class="form-control mb-2" rows="2" placeholder="Add a comment..." required minlength="1" maxlength="1000"></textarea>
+                <button type="submit" class="btn btn-cs-accent btn-sm">Post Comment</button>
+            </form>
+        }
+        else
+        {
+            <p class="text-muted no-print"><a asp-area="Identity" asp-page="/Account/Login">Log in</a> to join the discussion.</p>
+        }
+
+        <div id="commentsList">
+            @foreach (var c in a.Comments)
+            {
+                <div class="border-bottom py-2">
+                    <strong><a asp-page="/Users/Details" asp-route-id="@c.UserID" class="text-decoration-none">@c.Author</a></strong>
+                    <span class="text-muted small">@c.CommentDate.ToString("MMM dd, yyyy HH:mm")</span>
+                    <p class="mb-0">@c.CommentText</p>
+                </div>
+            }
+        </div>
+    </article>
+}
+
+@section Scripts {
+    <script>
+        // Anti-forgery token needs a form somewhere on the page; the layout doesn't
+        // render one by default outside of <form>, so we inject a hidden global form.
+    </script>
+}

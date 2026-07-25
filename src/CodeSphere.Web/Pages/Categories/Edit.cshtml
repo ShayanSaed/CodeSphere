@@ -1,0 +1,23 @@
+@page "{id:int}"
+@model CodeSphere.Web.Pages.Categories.EditModel
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<h1>Edit Category</h1>
+
+<form method="post" class="mt-3 col-md-6">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Input.CategoryID" />
+    <div class="mb-3">
+        <label asp-for="Input.CategoryName" class="form-label"></label>
+        <input asp-for="Input.CategoryName" class="form-control" />
+        <span asp-validation-for="Input.CategoryName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Input.Description" class="form-label"></label>
+        <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-cs-accent">Save</button>
+    <a asp-page="/Categories/Index" class="btn btn-outline-secondary">Cancel</a>
+</form>

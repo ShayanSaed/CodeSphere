@@ -1,0 +1,8 @@
+@page
+@model CodeSphere.Web.Pages.Error.BadRequestModel
+@{
+    ViewData["Title"] = "Invalid Request";
+}
+<h1 class="text-warning"><i class="bi bi-exclamation-triangle"></i> Invalid Request</h1>
+<p>@(Model.Message ?? "The request could not be completed because of a validation error.")</p>
+<a asp-page="/Index" class="btn btn-cs-accent">Back to Home</a>

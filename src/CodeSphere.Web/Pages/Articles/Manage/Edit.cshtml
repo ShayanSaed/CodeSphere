@@ -1,0 +1,79 @@
+@page "{id:int}"
+@model CodeSphere.Web.Pages.Articles.Manage.EditModel
+@{
+    ViewData["Title"] = "Edit Article";
+}
+
+<h1>Edit Article</h1>
+
+<form method="post" class="mt-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Input.ArticleID" />
+
+    <div class="mb-3">
+        <label asp-for="Input.Title" class="form-label"></label>
+        <input asp-for="Input.Title" class="form-control" />
+        <span asp-validation-for="Input.Title" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Input.CategoryID" class="form-label">Category</label>
+            <select asp-for="Input.CategoryID" class="form-select">
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.CategoryID">@c.CategoryName</option>
+                }
+            </select>
+            <span asp-validation-for="Input.CategoryID" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label asp-for="Input.ReadingTime" class="form-label">Reading time (min)</label>
+            <input asp-for="Input.ReadingTime" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Input.ReadingTime" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label asp-for="Input.Status" class="form-label">Status</label>
+            <select asp-for="Input.Status" class="form-select">
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tags</label>
+        <div class="tag-picker" data-tag-picker>
+            <div class="tag-picker-chips" id="tagChips"></div>
+            <input type="text" class="form-control" id="tagSearchInput" placeholder="Type to search tags..." autocomplete="off" />
+            <div class="tag-picker-suggestions" id="tagSuggestions"></div>
+        </div>
+        <div id="tagHiddenInputs"></div>
+        <div class="form-text">Search and click a tag to add it; click the &times; on a tag to remove it.</div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Content" class="form-label"></label>
+        <textarea asp-for="Input.Content" class="form-control" rows="12"></textarea>
+        <span asp-validation-for="Input.Content" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-cs-accent"><i class="bi bi-save"></i> Save Changes</button>
+    <a asp-page="/Articles/Manage/Index" class="btn btn-outline-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <script id="allTagsData" type="application/json">@Html.Raw(Model.TagsJson)</script>
+    <script id="initialTagsData" type="application/json">@Html.Raw(Model.InitialTagsJson)</script>
+    <script>
+        initTagPicker({
+            inputId: 'tagSearchInput',
+            chipsId: 'tagChips',
+            suggestionsId: 'tagSuggestions',
+            hiddenContainerId: 'tagHiddenInputs',
+            allTags: JSON.parse(document.getElementById('allTagsData').textContent),
+            hiddenInputName: 'Input.TagIds',
+            initialSelected: JSON.parse(document.getElementById('initialTagsData').textContent)
+        });
+    </script>
+}

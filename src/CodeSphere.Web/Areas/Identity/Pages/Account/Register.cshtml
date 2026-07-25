@@ -1,0 +1,87 @@
+@page
+@model CodeSphere.Web.Areas.Identity.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Create an account";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h1 class="mb-4">Create an account</h1>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <h6 class="text-muted text-uppercase small mt-2">Account</h6>
+                <div class="mb-3">
+                    <label asp-for="Input.UserName" class="form-label"></label>
+                    <input asp-for="Input.UserName" class="form-control" autocomplete="username" autofocus />
+                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.Password" class="form-label"></label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <h6 class="text-muted text-uppercase small mt-3">Profile <span class="text-lowercase">(optional — shown on your public profile page)</span></h6>
+
+                <div class="mb-3">
+                    <label asp-for="Input.FullName" class="form-label"></label>
+                    <input asp-for="Input.FullName" class="form-control" placeholder="e.g. Ada Lovelace" />
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Bio" class="form-label"></label>
+                    <textarea asp-for="Input.Bio" class="form-control" rows="2" placeholder="A short bio for your profile page"></textarea>
+                    <span asp-validation-for="Input.Bio" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.Country" class="form-label"></label>
+                        <input asp-for="Input.Country" class="form-control" placeholder="e.g. Canada" />
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.WebsiteURL" class="form-label"></label>
+                        <input asp-for="Input.WebsiteURL" class="form-control" placeholder="https://your-site.dev" />
+                        <span asp-validation-for="Input.WebsiteURL" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.ProfileImageURL" class="form-label"></label>
+                    <input asp-for="Input.ProfileImageURL" class="form-control" placeholder="https://example.com/your-photo.jpg" />
+                    <div class="form-text">
+                        A direct link to an image (must start with <code>http://</code> or <code>https://</code>).
+                        We only ever display this link in your browser — CodeSphere never downloads or stores the image itself.
+                        Leave blank to show a placeholder icon instead.
+                    </div>
+                    <span asp-validation-for="Input.ProfileImageURL" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-cs-accent w-100">Create account</button>
+            </form>
+
+            <p class="mt-3 text-muted mb-0">
+                Already have an account?
+                <a asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl">Log in</a>.
+            </p>
+        </div>
+    </div>
+</div>

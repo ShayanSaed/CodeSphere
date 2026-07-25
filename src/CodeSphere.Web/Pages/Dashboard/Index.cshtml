@@ -1,0 +1,74 @@
+@page
+@model CodeSphere.Web.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>Admin Dashboard</h1>
+
+<div class="row g-3 my-2">
+    <div class="col-md-2"><div class="card stat-card p-3 text-center"><div class="fs-3 fw-bold">@Model.Stats.TotalArticles</div><div class="text-muted small">Articles</div></div></div>
+    <div class="col-md-2"><div class="card stat-card p-3 text-center"><div class="fs-3 fw-bold text-success">@Model.Stats.PublishedArticles</div><div class="text-muted small">Published</div></div></div>
+    <div class="col-md-2"><div class="card stat-card p-3 text-center"><div class="fs-3 fw-bold text-secondary">@Model.Stats.DraftArticles</div><div class="text-muted small">Drafts</div></div></div>
+    <div class="col-md-2"><div class="card stat-card p-3 text-center"><div class="fs-3 fw-bold">@Model.Stats.TotalUsers</div><div class="text-muted small">Users</div></div></div>
+    <div class="col-md-2"><div class="card stat-card p-3 text-center"><div class="fs-3 fw-bold">@Model.Stats.TotalComments</div><div class="text-muted small">Comments</div></div></div>
+    <div class="col-md-2"><div class="card stat-card p-3 text-center"><div class="fs-3 fw-bold">@Model.Stats.TotalReactions</div><div class="text-muted small">Reactions</div></div></div>
+</div>
+
+<div class="row g-3 my-2">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Articles by Category</h5>
+            <canvas id="categoryChart" height="220"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Articles Published (last 14 days)</h5>
+            <canvas id="timelineChart" height="220"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3 my-2">
+    <h5>Top 5 Trending Articles</h5>
+    <canvas id="topArticlesChart" height="140"></canvas>
+</div>
+
+@section Scripts {
+    <script>
+        // Bonus feature: AJAX/Fetch API pulls fresh stats and renders them with Chart.js.
+        async function loadDashboard() {
+            const res = await fetch('?handler=StatsJson');
+            const stats = await res.json();
+
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: stats.articlesByCategory.map(c => c.categoryName),
+                    datasets: [{ data: stats.articlesByCategory.map(c => c.count),
+                        backgroundColor: ['#2b3a67','#ff6b35','#4c956c','#f2c14e','#c65299','#5c8ba1'] }]
+                }
+            });
+
+            new Chart(document.getElementById('timelineChart'), {
+                type: 'line',
+                data: {
+                    labels: stats.articlesOverTime.map(d => new Date(d.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })),
+                    datasets: [{ label: 'Articles published', data: stats.articlesOverTime.map(d => d.count),
+                        borderColor: '#ff6b35', tension: .3, fill: false }]
+                }
+            });
+
+            new Chart(document.getElementById('topArticlesChart'), {
+                type: 'bar',
+                data: {
+                    labels: stats.topArticles.map(a => a.title),
+                    datasets: [{ label: 'Engagement Score', data: stats.topArticles.map(a => a.engagementScore), backgroundColor: '#2b3a67' }]
+                },
+                options: { indexAxis: 'y' }
+            });
+        }
+        loadDashboard();
+    </script>
+}

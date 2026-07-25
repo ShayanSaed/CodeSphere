@@ -1,0 +1,9 @@
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .container { width: 100% !important; max-width: 100% !important; }
+  table { width: 100%; border-collapse: collapse; }
+  table, th, td { border: 1px solid #333 !important; }
+  th, td { padding: 6px 8px; }
+  a[href]:after { content: "" !important; }
+}
