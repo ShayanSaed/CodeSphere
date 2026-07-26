@@ -47,7 +47,9 @@ public class DetailsModel : PageModel
         if (CurrentUserId is not int userId) return Unauthorized();
 
         var result = await _followService.ToggleAsync(userId, id);
-        if (!result.Success) return BadRequest(result.ErrorMessage);
+        // if (!result.Success) return BadRequest(result.ErrorMessage);
+        if (!result.Success)
+            return BadRequest(result.ErrorMessage ?? "An unknown error occurred.");
 
         return new JsonResult(result.Data);
     }
